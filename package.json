@@ -29,6 +29,7 @@
         "@mozilla/readability": "^0.6.0",
         "@popperjs/core": "^2.11.8",
         "@zeldafan0225/ai_horde": "^5.2.0",
+        "ajv-keywords": "^5.1.0",
         "archiver": "^7.0.1",
         "bing-translate-api": "^4.1.0",
         "body-parser": "^1.20.2",
@@ -164,7 +165,7 @@
         "@types/yargs": "^17.0.33",
         "@types/yauzl": "^2.10.3",
         "eslint": "^8.57.1",
-        "eslint-plugin-jsdoc": "^48.10.0",
-        "eslint-plugin-jest": "^27.9.0"
+        "eslint-plugin-jest": "^27.9.0",
+        "eslint-plugin-jsdoc": "^48.10.0"
     }
 }
