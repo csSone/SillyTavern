@@ -12,6 +12,7 @@ SillyTavern is a self-hosted web-based frontend for AI language model chat inter
 - `npm start` - Start production server
 - `npm run debug` - Start with Node.js debugging enabled (`--inspect`)
 - `npm start:no-csrf` - Start without CSRF protection (development only)
+- `npm run start:global` - Start with global installation support
 
 ### Alternative Runtime Support
 - `npm run start:electron` - Start using Electron wrapper
@@ -27,23 +28,27 @@ SillyTavern is a self-hosted web-based frontend for AI language model chat inter
 - `npm run plugins:install` - Install plugins
 
 ### Build Process
-- Webpack bundles frontend libraries automatically on start
-- Frontend assets are served from `public/` directory
-- Development uses hot reload for UI changes
+- Webpack bundles frontend libraries automatically on start via `webpack.config.js`
+- Frontend assets served from `public/` directory
+- Webpack output: `public/lib.js` (bundles third-party libraries)
+- Cache directories: `_webpack/` in DATA_ROOT or `/dist/` for Docker
+- No traditional build step required - development uses hot reload
 
 ## Architecture Overview
 
 ### Backend Structure (Node.js + Express)
-- **Entry Point**: `server.js` - Main Express server with middleware setup
+- **Entry Point**: `server.js` → `src/server-main.js` - Main Express server with middleware setup
 - **API Endpoints**: `src/endpoints/` - Modular route handlers organized by feature
   - `characters.js` - Character CRUD operations
   - `chats.js` - Chat history and management
   - `openai.js`, `anthropic.js`, `novelai.js` - AI provider integrations
   - `stable-diffusion.js` - Image generation
   - `users-*.js` - User management and authentication
-- **Middleware**: `src/middleware/` - Express middleware for security, logging, etc.
+  - `backends/` - Backend-specific adapter implementations
+- **Middleware**: `src/middleware/` - Express middleware for security, logging, CSRF, etc.
 - **Utilities**: `src/util.js` - Shared utility functions
 - **Plugin System**: `src/plugin-loader.js` - Dynamic plugin loading
+- **Configuration**: `config.yaml` - Main application configuration
 
 ### Frontend Structure (Vanilla JS + jQuery)
 - **Main Entry**: `public/index.html` + `public/script.js`
@@ -79,9 +84,11 @@ SillyTavern is a self-hosted web-based frontend for AI language model chat inter
 - Input sanitization with DOMPurify
 
 ### Testing
-- Minimal test infrastructure (Jest setup in `tests/`)
-- Primary testing done manually or through community feedback
-- No comprehensive automated test suite currently
+- Test directory: `tests/` with separate package.json and dependencies
+- Run unit tests: `cd tests && npm run test:unit` (requires `npm install` in tests/ first)
+- Run E2E tests: `cd tests && npm run test:e2e` (uses Playwright)
+- Unit tests use Jest with Node.js environment
+- Minimal test infrastructure - primary testing done manually
 
 ## Important Patterns
 
@@ -129,11 +136,12 @@ SillyTavern is a self-hosted web-based frontend for AI language model chat inter
 4. Test plugin loading with `npm run plugins:update`
 
 ### API Endpoint Development
-1. Create new file in `src/endpoints/`
-2. Use Express router pattern
+1. Create new file in `src/endpoints/` (see `characters.js`, `chats.js` for patterns)
+2. Use Express router pattern: `express.Router()`
 3. Include proper error handling and validation
-4. Add authentication middleware if needed
+4. Add authentication middleware if needed (`src/middleware/`)
 5. Follow RESTful conventions where applicable
+6. Register endpoint in `src/server-main.js` or related loader
 
 ## Branch Strategy
 - `release` - Main stable branch
