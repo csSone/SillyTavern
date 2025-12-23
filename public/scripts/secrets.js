@@ -167,6 +167,7 @@ const INPUT_MAP = {
     [SECRET_KEYS.XAI]: '#api_key_xai',
     [SECRET_KEYS.VERTEXAI_SERVICE_ACCOUNT]: '#vertexai_service_account_json',
     [SECRET_KEYS.MOONSHOT]: '#api_key_moonshot',
+    [SECRET_KEYS.MINIMAX]: '#api_key_minimax',
     [SECRET_KEYS.FIREWORKS]: '#api_key_fireworks',
     [SECRET_KEYS.COMETAPI]: '#api_key_cometapi',
     [SECRET_KEYS.AZURE_OPENAI]: '#api_key_azure_openai',

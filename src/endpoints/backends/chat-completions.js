@@ -78,6 +78,7 @@ const API_XAI = 'https://api.x.ai/v1';
 const API_AIMLAPI = 'https://api.aimlapi.com/v1';
 const API_POLLINATIONS = 'https://text.pollinations.ai/openai';
 const API_MOONSHOT = 'https://api.moonshot.ai/v1';
+const API_MINIMAX = 'https://api.minimaxi.com/v1';
 const API_FIREWORKS = 'https://api.fireworks.ai/inference/v1';
 const API_COMETAPI = 'https://api.cometapi.com/v1';
 const API_ZAI_COMMON = 'https://api.z.ai/api/paas/v4';
@@ -130,6 +131,43 @@ function setJsonObjectFormat(bodyParams, messages, jsonSchema) {
         content: `JSON schema for the response:\n${JSON.stringify(jsonSchema.value, null, 4)}`,
     };
     messages.push(message);
+}
+
+/**
+ * Converts system messages to user messages for MiniMax API.
+ * MiniMax API does not support the 'system' role, so we need to convert it.
+ * @param {object[]} messages Array of messages
+ * @returns {object[]} Converted messages array
+ */
+function convertMiniMaxMessages(messages) {
+    if (!Array.isArray(messages)) {
+        return messages;
+    }
+
+    const converted = [];
+    let systemContent = '';
+
+    for (const message of messages) {
+        if (message.role === 'system') {
+            // Accumulate system messages
+            if (message.content) {
+                systemContent += (systemContent ? '\n\n' : '') + message.content;
+            }
+        } else {
+            // Keep non-system messages as is
+            converted.push(message);
+        }
+    }
+
+    // If we have system content, prepend it as a user message
+    if (systemContent) {
+        converted.unshift({
+            role: 'user',
+            content: `System instructions:\n${systemContent}`,
+        });
+    }
+
+    return converted;
 }
 
 /**
@@ -1754,6 +1792,24 @@ router.post('/status', async function (request, statusResponse) {
             apiUrl = API_SILICONFLOW;
             apiKey = readSecret(request.user.directories, SECRET_KEYS.SILICONFLOW);
             headers = {};
+        } else if (request.body.chat_completion_source === CHAT_COMPLETION_SOURCES.MINIMAX) {
+            // MiniMax API does not support /models endpoint
+            // Return predefined model list directly
+            apiKey = readSecret(request.user.directories, SECRET_KEYS.MINIMAX);
+            if (!apiKey) {
+                console.warn('MiniMax API key is missing.');
+                return statusResponse.status(400).send({ error: true });
+            }
+            // Return predefined MiniMax models
+            return statusResponse.send({
+                data: [
+                    { id: 'MiniMax-M2' },
+                    { id: 'MiniMax-M2.1' },
+                    { id: 'MiniMax-M2-Stable' },
+                    { id: 'MiniMax-M1' },
+                    { id: 'MiniMax-Text-01' },
+                ],
+            });
         } else {
             console.warn('This chat completion source is not supported yet.');
             return statusResponse.status(400).send({ error: true });
@@ -2178,6 +2234,16 @@ router.post('/generate', async function (request, response) {
             request.body.json_schema
                 ? setJsonObjectFormat(bodyParams, request.body.messages, request.body.json_schema)
                 : addAssistantPrefix(request.body.messages, [], 'partial');
+        } else if (request.body.chat_completion_source === CHAT_COMPLETION_SOURCES.MINIMAX) {
+            apiUrl = API_MINIMAX;
+            apiKey = readSecret(request.user.directories, SECRET_KEYS.MINIMAX);
+            headers = {};
+            bodyParams = {};
+            // Convert system messages to user messages for MiniMax API compatibility
+            request.body.messages = convertMiniMaxMessages(request.body.messages);
+            if (request.body.json_schema) {
+                setJsonObjectFormat(bodyParams, request.body.messages, request.body.json_schema);
+            }
         } else if (request.body.chat_completion_source === CHAT_COMPLETION_SOURCES.COMETAPI) {
             apiUrl = API_COMETAPI;
             apiKey = readSecret(request.user.directories, SECRET_KEYS.COMETAPI);

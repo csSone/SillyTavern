@@ -204,6 +204,7 @@ export const CHAT_COMPLETION_SOURCES = {
     XAI: 'xai',
     POLLINATIONS: 'pollinations',
     MOONSHOT: 'moonshot',
+    MINIMAX: 'minimax',
     FIREWORKS: 'fireworks',
     COMETAPI: 'cometapi',
     AZURE_OPENAI: 'azure_openai',
