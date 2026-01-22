@@ -57,7 +57,7 @@ public/scripts/extensions/third-party
 yarn.lock
 *.code-workspace
 test-results/
-
+CLAUDE.md
 # Electron build outputs and dependencies
 src/electron/node_modules/
 src/electron/dist/
