@@ -57,4 +57,20 @@ public/scripts/extensions/third-party
 yarn.lock
 *.code-workspace
 test-results/
-CLAUDE.md
+
+# Electron build outputs and dependencies
+src/electron/node_modules/
+src/electron/dist/
+src/electron/build/
+src/electron/*.log
+src/electron/.env.local
+src/electron/.env.*.local
+
+# Playwright MCP
+.playwright-mcp/
+
+# Claude Code workspace
+.claude/
+
+# Temporary files
+nul

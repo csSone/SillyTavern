@@ -1,0 +1,86 @@
+{
+  "appId": "com.sillytavern.app",
+  "productName": "SillyTavern",
+  "directories": {
+    "output": "../../dist/electron",
+    "buildResources": "assets"
+  },
+  "files": [
+    "**/*",
+    "!**/*.map",
+    "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}/**/*",
+    "!**/node_modules/.cache",
+    "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+    "!.editorconfig",
+    "!**/._*",
+    "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+    "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+    "!**/{appveyor.yml,.travis.yml,circle.yml}",
+    "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
+    "!**/docs/**/*",
+    "!**/tests/**/*",
+    "!**/.claude/**/*",
+    "!**/dist/**/*"
+  ],
+  "extraResources": [
+    {
+      "from": "../..",
+      "to": "app",
+      "filter": [
+        "**/*",
+        "!**/*.map",
+        "!node_modules/**/*{test,__tests__,tests,powered-test,example,examples}/**/*",
+        "!node_modules/.cache/**",
+        "!**/.git/**",
+        "!**/docs/**",
+        "!**/tests/**",
+        "!**/.claude/**",
+        "!**/dist/**",
+        "!**/node_modules/**/*.md",
+        "!**/node_modules/**/*.txt",
+        "!**/node_modules/**/*.h",
+        "!**/node_modules/**/*.cc",
+        "!**/node_modules/**/*.gyp",
+        "!**/node_modules/**/*.py"
+      ]
+    }
+  ],
+  "extraFiles": [
+    {
+      "from": "../../public",
+      "to": "resources/public",
+      "filter": ["**/*"]
+    }
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      },
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "../../public/st-launcher.ico"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "SillyTavern",
+    "perMachine": false,
+    "runAfterFinish": true,
+    "include": "installer.nsh"
+  },
+  "portable": {
+    "artifactName": "SillyTavern-portable.exe"
+  },
+  "publish": {
+    "provider": "github",
+    "owner": "SillyTavern",
+    "repo": "SillyTavern"
+  }
+}

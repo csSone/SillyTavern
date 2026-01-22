@@ -1,16 +1,23 @@
 {
   "name": "sillytavern-electron",
   "version": "1.0.0",
-  "description": "Electron server for SillyTavern",
+  "description": "Electron server for SillyTavern with system tray support",
   "license": "AGPL-3.0",
   "author": "",
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder -w",
+    "build:portable": "electron-builder -w --publish never",
+    "build:nsis": "electron-builder -w --config.nsis.oneClick=false"
   },
   "dependencies": {
-    "electron": "^35.0.0"
-  }
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "electron": "^35.0.0",
+    "electron-builder": "^24.0.0"
+  },
+  "build": "./electron-builder.json"
 }
